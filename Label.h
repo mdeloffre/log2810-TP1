@@ -12,8 +12,10 @@ class Label {
 public:
 	Label(Node, Node, int, bool);
 	Label(Node, int, bool);
-	~Label();
+	Label();
 	void setMarked(bool);
+	void setCost(int);
+	Node getCurrentNode();
 };
 
 Label::Label(Node currentNode, Node previousNode, int cost, bool hasBeenVisited) {
@@ -31,6 +33,16 @@ Label::Label(Node currentNode, int cost, bool hasBeenVisited) {
 	Label::isMarked = false;
 }
 
+Label::Label() {}
+
 void Label::setMarked(bool marked) {
-	setMarked = marked;
+	isMarked = marked;
+}
+
+void Label::setCost(int cost) {
+	Label::cost = cost;
+}
+
+Node Label::getCurrentNode() {
+	return currentNode;
 }

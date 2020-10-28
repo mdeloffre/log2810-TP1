@@ -70,14 +70,14 @@ int main()
             do {
                 cout << "Entrez l'ID du sommet de depart : ";
                 cin >> startingID;
-            } while (graph.nodeExists(startingID));
+            } while (!graph.nodeExists(startingID));
             
             do {
                 cout << "Entrez l'ID du sommet d'arrivee : ";
                 cin >> endingID;
-            } while (graph.nodeExists(endingID));
+            } while (!graph.nodeExists(endingID));
 
-            graph.shortestPath(startingID, endingID);
+            vehicleAutonomy = graph.shortestPath(startingID, endingID, vehicle);
             break;
         case 5:
             exit(1);

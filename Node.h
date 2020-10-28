@@ -5,7 +5,6 @@
 #include "Arc.h"
 using namespace std;
 
-
 class Node {
 	string id;
 	string type;
@@ -13,6 +12,7 @@ class Node {
 
 public:
 	Node(string, string);
+	Node();
 	string getId();
 	string getType();
 	void addSuccessor(Arc);
@@ -23,6 +23,8 @@ Node::Node(string id, string type) {
 	Node::id = id;
 	Node::type = type;
 }
+
+Node::Node() {}
 
 string Node::getId() {
 	return id;

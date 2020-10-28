@@ -9,6 +9,7 @@ class Vehicle {
 
 public:
 	Vehicle(string, int, int);
+	Vehicle();
 	void setType(string);
 	string getType();
 	void setAutonomie(int);
@@ -22,6 +23,8 @@ Vehicle::Vehicle(string type, int autonomie, int autonomieMax) {
 	Vehicle::autonomie = autonomie;
 	Vehicle::autonomieMax = autonomieMax;
 }
+
+Vehicle::Vehicle() {}
 
 void Vehicle::setType(string type) {
 	Vehicle::type = type;

@@ -15,16 +15,23 @@ using namespace std;
 class Graph {
 	vector<Node> nodes;
 	vector<Arc> arcs;
-	public:
-		void display_graph();
-		void readFromFile(string);
-		vector<string> split(string, char);
-		Node getNodeById(string id);
-		void shortestPath(string, string);
-		void extractSubGraph(string, string);
-		bool nodeExists(string);
+	vector<Label> labels;
+	Vehicle vehicle;
+
+public:
+	Graph();
+	void display_graph();
+	void readFromFile(string);
+	vector<string> split(string, char);
+	Node getNodeById(string id);
+	int shortestPath(string, string, Vehicle);
+	void extractSubGraph(string, string);
+	bool nodeExists(string);
+	Label findLabel(Node);
+	int getIndex(Label);
 };
 
+Graph::Graph() {}
 
 void Graph::display_graph() {
 	//Create a list with sorted nodes and their neighbors for the display
@@ -135,20 +142,62 @@ Node Graph::getNodeById(string id) {
 	return node;
 }
 
+int Graph::shortestPath(string start, string end, Vehicle usedVehicle) {
+	vehicle = usedVehicle;
 
-void Graph::shortestPath(string start, string end) {
 	Node startingNode = getNodeById(start);
 	Node endingNode = getNodeById(end);
 	
-	vector<Label> labels;
 	Label startingLabel(startingNode, 0, true);
 	labels.push_back(startingLabel);
 
 	vector<Arc> predecessorArcs;
+	int remainingAutonomy = vehicle.getAutonomie();
+	bool finished = false;
+	
+	Label currentLabel = startingLabel;
+	Label nextLabel;
+	int currentIndex, currentDistance;
+	int nextIndex;
+	int totalDistance = 0;
 
 	for (size_t i = 0; i < nodes.size(); i++) {
-
+		if (nodes[i].getId().compare(start) != 0) {
+			Label currentLabel(nodes[i], numeric_limits<int>::max(), false);
+			labels.push_back(currentLabel);
+		}
 	}
+
+	while (!finished) {
+
+		currentLabel.setMarked(true);
+		int bestCost = numeric_limits<int>::max();
+
+		if (currentLabel.getCurrentNode().getId().compare(end) == 0) {
+			finished = true;
+		}
+		vector<Arc> successors = currentLabel.getCurrentNode().getSuccessors();
+		for (size_t i = 0; i < successors.size(); i++) {
+
+			Label currentSuccessor = findLabel(getNodeById(successors[i].getEndingNode()));
+			//The label for the node we're currently visiting
+			currentIndex = getIndex(currentSuccessor);
+			//The distance between it and the previous node
+			currentDistance = successors[i].getDistance();
+
+			labels[currentIndex].setCost(totalDistance + currentDistance);
+			cout << "Le cout du label correspondant au node " << currentLabel.getCurrentNode().getId() << " est " << currentDistance + totalDistance;
+			
+			if ((totalDistance + currentDistance < bestCost) && (remainingAutonomy > currentDistance)) {
+				bestCost = totalDistance + currentDistance;				
+			}
+
+		}
+
+		
+	}
+	
+	return remainingAutonomy;
 }
 
 void Graph::extractSubGraph(string nodeID, string vehicleType) {
@@ -161,4 +210,27 @@ bool Graph::nodeExists(string id) {
 		if (nodes[i].getId().compare(id) == 0) retValue = true;
 	}
 	return retValue;
+}
+
+Label Graph::findLabel(Node node) {
+	Label label;
+	for (size_t i = 0; i < labels.size(); i++) {
+		if (labels[i].getCurrentNode().getId().compare(node.getId()) == 0) {
+			label = labels[i];
+			break;
+		}
+	}
+	return label;
+}
+
+int Graph::getIndex(Label label) {
+	auto it = find(labels.begin(), labels.end(), label);
+
+	if (it != labels.end()) { 
+		int index = distance(labels.begin(), it);
+		cout << index << endl;
+	}
+	else {
+		cout << "-1" << endl;
+	}
 }
